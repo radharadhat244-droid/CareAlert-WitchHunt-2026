@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareAlert</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Poppins', sans-serif; background: #F5F5DC; max-width: 390px; margin: 0 auto; min-height: 100vh; position: relative; overflow-x: hidden; font-size: 16px; }
+.screen { display: none; min-height: 100vh; padding-bottom: 80px; }
+.screen.active { display: block; }
+/* COLORS */
+:root { --green-dark: #2D5016; --green-light: #8BC34A; --cream: #F5F5DC; --red: #D32F2F; --white: #fff; }
+/* SPLASH */
+#splash { background: var(--green-dark); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding-bottom: 0; }
+#splash .logo { font-size: 60px; }
+#splash h1 { color: white; font-size: 42px; font-weight: 700; margin-top: 10px; }
+#splash p { color: var(--green-light); font-size: 18px; margin-top: 8px; }
+/* LANGUAGE */
+#language { padding: 30px 20px; }
+.lang-header { text-align: center; margin-bottom: 30px; }
+.lang-header .logo { font-size: 40px; }
+.lang-header h2 { color: var(--green-dark); font-size: 20px; font-weight: 700; margin-top: 8px; line-height: 1.4; }
+.lang-btn { width: 100%; padding: 18px; margin-bottom: 14px; background: var(--green-dark); color: white; border: none; border-radius: 16px; font-size: 20px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.lang-btn:active { background: var(--green-light); }
+.lang-note { text-align: center; color: #888; font-size: 13px; margin-top: 10px; }
+/* HEADER */
+.header { background: var(--green-dark); padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.header h2 { color: white; font-size: 20px; font-weight: 700; }
+.header .logo-text { color: white; font-size: 22px; font-weight: 700; }
+.header .bell { font-size: 24px; cursor: pointer; }
+.back-btn { background: none; border: none; color: white; font-size: 22px; cursor: pointer; margin-right: 10px; }
+.header-left { display: flex; align-items: center; }
+/* BOTTOM NAV */
+.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 390px; background: white; display: flex; justify-content: space-around; padding: 10px 0 6px; border-top: 2px solid #e0e0e0; z-index: 200; }
+.nav-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; padding: 4px 10px; border-radius: 10px; transition: 0.2s; }
+.nav-item span:first-child { font-size: 24px; }
+.nav-item span:last-child { font-size: 11px; color: #888; margin-top: 2px; }
+.nav-item.active span:last-child { color: var(--green-dark); font-weight: 700; }
+.nav-item.active { background: #e8f5e9; }
+/* CARDS */
+.card { background: white; border-radius: 16px; padding: 18px; margin: 12px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-left: 5px solid var(--green-dark); }
+.card h3 { font-size: 17px; color: var(--green-dark); font-weight: 600; }
+.card p { font-size: 14px; color: #555; margin-top: 4px; }
+.badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-top: 8px; }
+.badge.green { background: #e8f5e9; color: #2D5016; }
+.badge.yellow { background: #fff9c4; color: #f57f17; }
+.badge.red { background: #ffebee; color: #D32F2F; }
+/* BUTTONS */
+.btn { width: calc(100% - 32px); margin: 8px 16px; padding: 16px; border: none; border-radius: 14px; font-size: 17px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.btn-green { background: var(--green-dark); color: white; }
+.btn-red { background: var(--red); color: white; }
+.btn-outline { background: white; color: var(--green-dark); border: 2px solid var(--green-dark); }
+.btn:active { opacity: 0.85; transform: scale(0.98); }
+/* HOME */
+.greeting { padding: 20px 16px 4px; }
+.greeting h2 { font-size: 26px; color: var(--green-dark); font-weight: 700; }
+.greeting p { font-size: 14px; color: #888; margin-top: 2px; }
+.section-title { font-size: 16px; font-weight: 700; color: var(--green-dark); padding: 10px 16px 0; }
+.quick-actions { display: flex; gap: 12px; padding: 8px 16px; }
+.quick-btn { flex: 1; padding: 16px 8px; border: none; border-radius: 14px; font-size: 15px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; }
+.quick-btn.red { background: var(--red); color: white; }
+.quick-btn.green { background: var(--green-dark); color: white; }
+/* MEDICINE */
+.progress-box { margin: 12px 16px; background: white; border-radius: 14px; padding: 14px; }
+.progress-box p { font-size: 14px; color: #555; margin-bottom: 8px; }
+.progress-bar { background: #e0e0e0; border-radius: 10px; height: 10px; }
+.progress-fill { background: var(--green-light); height: 10px; border-radius: 10px; transition: width 0.4s; }
+.med-section { padding: 8px 16px 0; }
+.med-time { font-size: 13px; font-weight: 700; color: #888; margin-bottom: 6px; text-transform: uppercase; }
+.med-card { background: white; border-radius: 14px; padding: 16px; margin-bottom: 10px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+.med-name { font-size: 17px; font-weight: 700; color: var(--green-dark); }
+.med-note { font-size: 13px; color: #888; margin: 4px 0 10px; }
+.taken-btn { width: 100%; padding: 12px; border: 2px solid var(--green-dark); border-radius: 10px; background: white; color: var(--green-dark); font-size: 15px; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; transition: 0.3s; }
+.taken-btn.done { background: var(--green-dark); color: white; border-color: var(--green-dark); }
+.success-banner { display: none; margin: 12px 16px; background: #e8f5e9; border-radius: 14px; padding: 16px; text-align: center; color: var(--green-dark); font-weight: 700; font-size: 16px; }
+/* ACTIVITY */
+.activity-circle { width: 160px; height: 160px; border-radius: 50%; margin: 20px auto; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: white; }
+.circle-yellow { background: #f9a825; }
+.stats-row { display: flex; gap: 10px; padding: 0 16px; }
+.stat-box { flex: 1; background: white; border-radius: 14px; padding: 14px 8px; text-align: center; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+.stat-box .stat-icon { font-size: 22px; }
+.stat-box .stat-val { font-size: 20px; font-weight: 700; color: var(--green-dark); }
+.stat-box .stat-label { font-size: 11px; color: #888; }
+.timeline { margin: 14px 16px; background: white; border-radius: 14px; padding: 16px; }
+.timeline h3 { font-size: 15px; font-weight: 700; color: var(--green-dark); margin-bottom: 12px; }
+.tl-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 14px; color: #444; }
+.tl-time { font-size: 12px; color: #888; min-width: 60px; }
+.alert-box { margin: 10px 16px; background: #fff9c4; border-radius: 14px; padding: 14px; border-left: 4px solid #f9a825; font-size: 14px; color: #555; }
+/* EMERGENCY */
+.sos-wrap { display: flex; flex-direction: column; align-items: center; padding: 30px 16px 20px; }
+.sos-btn { width: 160px; height: 160px; border-radius: 50%; background: var(--red); border: none; color: white; font-size: 42px; font-weight: 700; cursor: pointer; box-shadow: 0 0 0 0 rgba(211,47,47,0.5); animation: pulse 2s infinite; }
+@keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(211,47,47,0.5)} 70%{box-shadow:0 0 0 20px rgba(211,47,47,0)} 100%{box-shadow:0 0 0 0 rgba(211,47,47,0)} }
+.sos-btn.disabled { background: #aaa; animation: none; }
+.sos-label { margin-top: 14px; font-size: 15px; color: #888; }
+.sos-result { display: none; margin: 0 16px; }
+.sos-success { background: #e8f5e9; border-radius: 14px; padding: 16px; text-align: center; color: var(--green-dark); font-weight: 700; font-size: 17px; margin-bottom: 12px; }
+.contact-card { background: white; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+.contact-info .name { font-size: 16px; font-weight: 700; color: var(--green-dark); }
+.contact-info .relation { font-size: 13px; color: #888; }
+.contact-badge { font-size: 12px; background: #e8f5e9; color: var(--green-dark); padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+.countdown { text-align: center; color: var(--red); font-weight: 700; font-size: 15px; margin: 8px 0; }
+.contacts-section { padding: 0 16px; }
+.contacts-section h3 { font-size: 16px; font-weight: 700; color: var(--green-dark); margin-bottom: 10px; }
+/* NOTIFICATIONS */
+.notif-section { margin: 12px 16px; background: white; border-radius: 16px; padding: 16px; }
+.notif-section h3 { font-size: 15px; font-weight: 700; color: var(--green-dark); margin-bottom: 14px; }
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+.toggle-row:last-child { border-bottom: none; }
+.toggle-label { font-size: 15px; color: #333; }
+.toggle { width: 48px; height: 26px; background: #ccc; border-radius: 13px; position: relative; cursor: pointer; transition: 0.3s; }
+.toggle.on { background: var(--green-light); }
+.toggle::after { content:''; position: absolute; width: 22px; height: 22px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
+.toggle.on::after { left: 24px; }
+.toggle.locked { background: var(--green-light); cursor: not-allowed; }
+.sound-options { display: flex; gap: 10px; margin-top: 10px; }
+.sound-opt { flex: 1; padding: 12px 6px; text-align: center; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 13px; cursor: pointer; }
+.sound-opt.selected { border-color: var(--green-dark); background: #e8f5e9; color: var(--green-dark); font-weight: 700; }
+.notif-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+.notif-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.notif-dot.green { background: var(--green-light); }
+.notif-dot.yellow { background: #f9a825; }
+.notif-dot.red { background: var(--red); }
+.notif-text { font-size: 14px; color: #444; }
+.notif-time { font-size: 12px; color: #aaa; margin-top: 2px; }
+/* SETTINGS */
+.profile-box { background: var(--green-dark); padding: 24px 16px; display: flex; flex-direction: column; align-items: center; }
+.avatar { font-size: 56px; width: 90px; height: 90px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+.profile-box h3 { color: white; font-size: 20px; font-weight: 700; }
+.profile-box p { color: var(--green-light); font-size: 14px; }
+.edit-btn { margin-top: 10px; background: transparent; border: 2px solid white; color: white; padding: 6px 20px; border-radius: 20px; font-size: 14px; cursor: pointer; }
+.settings-list { margin: 14px 16px; background: white; border-radius: 16px; overflow: hidden; }
+.settings-item { display: flex; align-items: center; justify-content: space-between; padding: 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
+.settings-item:last-child { border-bottom: none; }
+.settings-left { display: flex; align-items: center; gap: 12px; }
+.settings-icon { font-size: 22px; }
+.settings-label { font-size: 16px; color: #333; }
+.settings-arrow { color: #bbb; font-size: 18px; }
+.font-size-row { display: flex; gap: 10px; padding: 0 16px; margin-top: 4px; }
+.font-btn { flex: 1; padding: 12px; background: white; border: 2px solid #e0e0e0; border-radius: 12px; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600; }
+.font-btn.selected { border-color: var(--green-dark); background: #e8f5e9; color: var(--green-dark); }
+.theme-row { display: flex; gap: 10px; padding: 0 16px; margin-top: 4px; }
+.theme-btn { flex: 1; padding: 12px; background: white; border: 2px solid #e0e0e0; border-radius: 12px; cursor: pointer; font-size: 14px; font-family: 'Poppins', sans-serif; font-weight: 600; }
+.theme-btn.selected { border-color: var(--green-dark); background: #e8f5e9; }
+.app-version { text-align: center; color: #aaa; font-size: 12px; margin: 16px; }
+body.dark { background: #1a1a1a; color: white; }
+body.dark .card, body.dark .med-card, body.dark .stat-box, body.dark .timeline, body.dark .notif-section, body.dark .settings-list, body.dark .contact-card, body.dark .progress-box { background: #2a2a2a; }
+body.dark .card h3, body.dark .med-name, body.dark .stat-val, body.dark .notif-section h3, body.dark .settings-label, body.dark .timeline h3 { color: #8BC34A; }
+body.dark .bottom-nav { background: #2a2a2a; border-top-color: #444; }
+body.dark .nav-item span:last-child { color: #aaa; }
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash" class="screen active">
+  <div class="logo">🌿</div>
+  <h1>CareAlert</h1>
+  <p>Your Care Companion</p>
+</div>
+
+<!-- LANGUAGE -->
+<div id="language" class="screen">
+  <div class="lang-header">
+    <div class="logo">🌿</div>
+    <h2>Choose Your Language<br>ಭಾಷೆ ಆಯ್ಕೆ ಮಾಡಿ<br>भाषा चुनें</h2>
+  </div>
+  <button class="lang-btn" onclick="changeLanguage('en')">🇮🇳 English</button>
+  <button class="lang-btn" onclick="changeLanguage('kn')">🇮🇳 ಕನ್ನಡ (Kannada)</button>
+  <button class="lang-btn" onclick="changeLanguage('hi')">🇮🇳 हिंदी (Hindi)</button>
+  <button class="lang-btn" onclick="changeLanguage('ta')">🇮🇳 தமிழ் (Tamil)</button>
+  <button class="lang-btn" onclick="changeLanguage('te')">🇮🇳 తెలుగు (Telugu)</button>
+  <button class="lang-btn" onclick="changeLanguage('ml')">🇮🇳 മലയാളം (Malayalam)</button>
+  <p class="lang-note">You can change this later in Settings</p>
+</div>
+
+<!-- HOME -->
+<div id="home" class="screen">
+  <div class="header">
+    <span class="logo-text">🌿 CareAlert</span>
+    <span class="bell" onclick="showScreen('notifications')">🔔</span>
+  </div>
+  <div class="greeting">
+    <h2 id="home-greeting">Good Morning, Rajan 👋</h2>
+    <p id="home-date"></p>
+  </div>
+  <div class="section-title">Today's Status</div>
+  <div class="card" onclick="showScreen('medicine')">
+    <h3>💊 Medicine</h3>
+    <p>Next: Metformin at 8:00 AM</p>
+    <span class="badge yellow">Pending</span>
+  </div>
+  <div class="card" onclick="showScreen('activity')">
+    <h3>🏃 Activity</h3>
+    <p>Steps today: 240</p>
+    <span class="badge yellow">Low</span>
+  </div>
+  <div class="card" onclick="showScreen('emergency')">
+    <h3>🚨 Emergency</h3>
+    <p>All contacts active</p>
+    <span class="badge green">Ready</span>
+  </div>
+  <div class="section-title">Quick Actions</div>
+  <div class="quick-actions">
+    <button class="quick-btn red" onclick="showScreen('emergency')">🆘 SOS Emergency</button>
+    <button class="quick-btn green" onclick="alert('Calling Priya...')">📞 Call Family</button>
+  </div>
+  <div class="bottom-nav" id="home-nav">
+    <div class="nav-item active" onclick="showScreen('home')"><span>🏠</span><span>Home</span></div>
+    <div class="nav-item" onclick="showScreen('medicine')"><span>💊</span><span>Medicine</span></div>
+    <div class="nav-item" onclick="showScreen('activity')"><span>🏃</span><span>Activity</span></div>
+    <div class="nav-item" onclick="showScreen('notifications')"><span>🔔</span><span>Alerts</span></div>
+    <div class="nav-item" onclick="showScreen('settings')"><span>⚙️</span><span>Settings</span></div>
+  </div>
+</div>
+
+<!-- MEDICINE -->
+<div id="medicine" class="screen">
+  <div class="header">
+    <div class="header-left">
+      <button class="back-btn" onclick="showScreen('home')">←</button>
+      <h2>💊 My Medicines</h2>
+    </div>
+  </div>
+  <div class="progress-box">
+    <p id="med-progress-text">0 of 3 medicines taken today</p>
+    <div class="progress-bar"><div class="progress-fill" id="med-progress-fill" style="width:0%"></div></div>
+  </div>
+  <div class="med-section">
+    <div class="med-time">🌅 Morning — 8:00 AM</div>
+    <div class="med-card">
+      <div class="med-name">Metformin 500mg</div>
+      <div class="med-note">Take with food</div>
+      <button class="taken-btn" id="med-btn-1" onclick="markMedicine(1)">Mark as Taken ✓</button>
+    </div>
+    <div class="med-time">☀️ Afternoon — 1:00 PM</div>
+    <div class="med-card">
+      <div class="med-name">Amlodipine 5mg</div>
+      <div class="med-note">Take after lunch</div>
+      <button class="taken-btn" id="med-btn-2" onclick="markMedicine(2)">Mark as Taken ✓</button>
+    </div>
+    <div class="med-time">🌙 Night — 9:00 PM</div>
+    <div class="med-card">
+      <div class="med-name">Atorvastatin 10mg</div>
+      <div class="med-note">Take before sleep</div>
+      <button class="taken-btn" id="med-btn-3" onclick="markMedicine(3)">Mark as Taken ✓</button>
+    </div>
+  </div>
+  <div class="success-banner" id="med-success">🎉 All medicines taken today!</div>
+  <button class="btn btn-outline" onclick="alert('Feature coming soon!')">+ Add Medicine</button>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showScreen('home')"><span>🏠</span><span>Home</span></div>
+    <div class="nav-item active" onclick="showScreen('medicine')"><span>💊</span><span>Medicine</span></div>
+    <div class="nav-item" onclick="showScreen('activity')"><span>🏃</span><span>Activity</span></div>
+    <div class="nav-item" onclick="showScreen('notifications')"><span>🔔</span><span>Alerts</span></div>
+    <div class="nav-item" onclick="showScreen('settings')"><span>⚙️</span><span>Settings</span></div>
+  </div>
+</div>
+
+<!-- ACTIVITY -->
+<div id="activity" class="screen">
+  <div class="header">
+    <div class="header-left">
+      <button class="back-btn" onclick="showScreen('home')">←</button>
+      <h2>🏃 Activity Monitor</h2>
+    </div>
+  </div>
+  <div class="activity-circle circle-yellow">
+    <span>⚠️</span>
+    <span>LOW</span>
+    <span style="font-size:13px">ACTIVITY</span>
+  </div>
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-icon">👟</div><div class="stat-val">240</div><div class="stat-label">Steps</div></div>
+    <div class="stat-box"><div class="stat-icon">⏰</div><div class="stat-val">2hr</div><div class="stat-label">Last Active</div></div>
+    <div class="stat-box"><div class="stat-icon">🔥</div><div class="stat-val">18</div><div class="stat-label">Calories</div></div>
+  </div>
+  <div class="timeline">
+    <h3>Today's Activity</h3>
+    <div class="tl-item"><span class="tl-time">6:00 AM</span><span>Woke up ✅</span></div>
+    <div class="tl-item"><span class="tl-time">8:00 AM</span><span>Had breakfast ✅</span></div>
+    <div class="tl-item"><span class="tl-time">10:00 AM</span><span>Walked to garden ✅</span></div>
+    <div class="tl-item"><span class="tl-time">12:00 PM</span><span>No activity detected ⚠️</span></div>
+    <div class="tl-item"><span class="tl-time">2:00 PM</span><span>Watching TV 📺</span></div>
+  </div>
+  <div class="alert-box">⚠️ Family has been notified of low activity</div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showScreen('home')"><span>🏠</span><span>Home</span></div>
+    <div class="nav-item" onclick="showScreen('medicine')"><span>💊</span><span>Medicine</span></div>
+    <div class="nav-item active" onclick="showScreen('activity')"><span>🏃</span><span>Activity</span></div>
+    <div class="nav-item" onclick="showScreen('notifications')"><span>🔔</span><span>Alerts</span></div>
+    <div class="nav-item" onclick="showScreen('settings')"><span>⚙️</span><span>Settings</span></div>
+  </div>
+</div>
+
+<!-- <!-- EMERGENCY -->
+<div id="emergency" class="screen">
+  <div class="header">
+    <div class="header-left">
+      <button class="back-btn" onclick="showScreen('home')">←</button>
+      <h2>🚨 Emergency</h2>
+    </div>
+  </div>
+  <div class="sos-wrap">
+    <button class="sos-btn" id="sos-btn" onclick="triggerSOS()">SOS</button>
+    <p class="sos-label">Press for emergency help</p>
+  </div>
+  <div class="sos-result" id="sos-result">
+    <div class="sos-success">✅ Alert Sent to Family!</div>
+    <div class="countdown" id="sos-countdown">Help arriving in estimated 8 minutes</div>
+    <div class="contact-card"><div class="contact-info"><div class="name">📱 Priya</div><div class="relation">Daughter</div></div><span class="contact-badge">WhatsApp ✓</span></div>
+    <div class="contact-card"><div class="contact-info"><div class="name">📱 Suresh</div><div class="relation">Son</div></div><span class="contact-badge">SMS ✓</span></div>
+    <div class="contact-card"><div class="contact-info"><div class="name">🏥 Dr. Meena</div><div class="relation">Doctor</div></div><span class="contact-badge">Call ✓</span></div>
+    <button class="btn btn-outline" onclick="resetSOS()">Cancel Alert</button>
+  </div>
+  <div class="contacts-section">
+    <h3>Family Contacts</h3>
+    <div class="contact-card"><div class="contact-info"><div class="name">Priya</div><div class="relation">Daughter · +91 98xxx</div></div><span class="contact-badge">Active</span></div>
+    <div class="contact-card"><div class="contact-info"><div class="name">Suresh</div><div class="relation">Son · +91 97xxx</div></div><span class="contact-badge">Active</span></div>
+    <div class="contact-card"><div class="contact-info"><div class="name">Dr. Meena</div><div class="relation">Doctor · +91 96xxx</div></div><span class="contact-badge">Active</span></div>
+    <button class="btn btn-outline" onclick="alert('Feature coming soon!')">+ Add Contact</button>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showScreen('home')"><span>🏠</span><span>Home</span></div>
+    <div class="nav-item" onclick="showScreen('medicine')"><span>💊</span><span>Medicine</span></div>
+    <div class="nav-item" onclick="showScreen('activity')"><span>🏃</span><span>Activity</span></div>
+    <div class="nav-item active" onclick="showScreen('notifications')"><span>🔔</span><span>Alerts</span></div>
+    <div class="nav-item" onclick="showScreen('settings')"><span>⚙️</span><span>Settings</span></div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div id="notifications" class="screen">
+  <div class="header">
+    <div class="header-left">
+      <button class="back-btn" onclick="showScreen('home')">←</button>
+      <h2>🔔 Notifications</h2>
+    </div>
+  </div>
+  <div class="notif-section">
+    <h3>Alert Preferences</h3>
+    <div class="toggle-row"><span class="toggle-label">💊 Medicine Reminders</span><div class="toggle on" onclick="toggleNotif(this)"></div></div>
+    <div class="toggle-row"><span class="toggle-label">🏃 Activity Alerts</span><div class="toggle on" onclick="toggleNotif(this)"></div></div>
+    <div class="toggle-row"><span class="toggle-label">🚨 Emergency Alerts 🔒</span><div class="toggle on locked"></div></div>
+    <div class="toggle-row"><span class="toggle-label">👨‍👩‍👧 Family Updates</span><div class="toggle on" onclick="toggleNotif(this)"></div></div>
+    <div class="toggle-row"><span class="toggle-label">🏥 Doctor Appointments</span><div class="toggle" onclick="toggleNotif(this)"></div></div>
+  </div>
+  <div class="notif-section">
+    <h3>Reminder Sound</h3>
+    <div class="sound-options">
+      <div class="sound-opt selected" onclick="selectSound(this)">🔔<br>Bell</div>
+      <div class="sound-opt" onclick="selectSound(this)">📯<br>Horn</div>
+      <div class="sound-opt" onclick="selectSound(this)">🎵<br>Chime</div>
+    </div>
+  </div>
+  <div class="notif-section">
+    <h3>Recent Notifications</h3>
+    <div class="notif-item"><div class="notif-dot green"></div><div><div class="notif-text">Time to take Metformin 500mg</div><div class="notif-time">Today 8:00 AM</div></div></div>
+    <div class="notif-item"><div class="notif-dot green"></div><div><div class="notif-text">Atorvastatin reminder</div><div class="notif-time">Yesterday 9:00 PM</div></div></div>
+    <div class="notif-item"><div class="notif-dot yellow"></div><div><div class="notif-text">Low activity detected — family notified</div><div class="notif-time">Yesterday 3:00 PM</div></div></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showScreen('home')"><span>🏠</span><span>Home</span></div>
+    <div class="nav-item" onclick="showScreen('medicine')"><span>💊</span><span>Medicine</span></div>
+    <div class="nav-item" onclick="showScreen('activity')"><span>🏃</span><span>Activity</span></div>
+    <div class="nav-item active" onclick="showScreen('notifications')"><span>🔔</span><span>Alerts</span></div>
+    <div class="nav-item" onclick="showScreen('settings')"><span>⚙️</span><span>Settings</span></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div id="settings" class="screen">
+  <div class="header">
+    <div class="header-left">
+      <button class="back-btn" onclick="showScreen('home')">←</button>
+      <h2>⚙️ Settings</h2>
+    </div>
+  </div>
+  <div class="profile-box">
+    <div class="avatar">👴</div>
+    <h3 id="profile-name">Rajan Kumar</h3>
+    <p>Age 72 · Bangalore</p>
+    <button class="edit-btn" onclick="alert('Edit profile coming soon!')">Edit Profile</button>
+  </div>
+  <div class="settings-list">
+    <div class="settings-item" onclick="showScreen('language')"><div class="settings-left"><span class="settings-icon">🌐</span><span class="settings-label">Language</span></div><span class="settings-arrow">›</span></div>
+    <div class="settings-item" onclick="showScreen('notifications')"><div class="settings-left"><span class="settings-icon">🔔</span><span class="settings-label">Notifications</span></div><span class="settings-arrow">›</span></div>
+    <div class="settings-item" onclick="showScreen('emergency')"><div class="settings-left"><span class="settings-icon">👨‍👩‍👧</span><span class="settings-label">Family Contacts (3)</span></div><span class="settings-arrow">›</span></div>
+    <div class="settings-item" onclick="showScreen('medicine')"><div class="settings-left"><span class="settings-icon">💊</span><span class="settings-label">My Medicines</span></div><span class="settings-arrow">›</span></div>
+    <div class="settings-item" onclick="alert('Privacy settings coming soon!')"><div class="settings-left"><span class="settings-icon">🔒</span><span class="settings-label">Privacy & Security</span></div><span class="settings-arrow">›</span></div>
+    <div class="settings-item" onclick="alert('Help & Support coming soon!')"><div class="settings-left"><span class="settings-icon">❓</span><span class="settings-label">Help & Support</span></div><span class="settings-arrow">›</span></div>
+  </div>
+  <div class="section-title" style="margin-top:14px">Text Size</div>
+  <div class="font-size-row">
+    <button class="font-btn" style="font-size:13px" onclick="changeFontSize('small', this)">A Small</button>
+    <button class="font-btn selected" style="font-size:16px" onclick="changeFontSize('medium', this)">A Medium</button>
+    <button class="font-btn" style="font-size:20px" onclick="changeFontSize('large', this)">A Large</button>
+  </div>
+  <div class="section-title" style="margin-top:14px">Theme</div>
+  <div class="theme-row">
+    <button class="theme-btn selected" onclick="setTheme('light', this)">🌿 Green</button>
+    <button class="theme-btn" onclick="setTheme('dark', this)">🌙 Dark Mode</button>
+  </div>
+  <div class="app-version">CareAlert v1.0 · WitchHunt 2026 · Team Matrix System</div>
+  <button class="btn btn-outline" style="color:#D32F2F;border-color:#D32F2F;margin-top:4px" onclick="showScreen('language')">Sign Out</button>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showScreen('home')"><span>🏠</span><span>Home</span></div>
+    <div class="nav-item" onclick="showScreen('medicine')"><span>💊</span><span>Medicine</span></div>
+    <div class="nav-item" onclick="showScreen('activity')"><span>🏃</span><span>Activity</span></div>
+    <div class="nav-item" onclick="showScreen('notifications')"><span>🔔</span><span>Alerts</span></div>
+    <div class="nav-item active" onclick="showScreen('settings')"><span>⚙️</span><span>Settings</span></div>
+  </div>
+</div>
+
+<script>
+// TRANSLATIONS
+const translations = {
+  en: { greeting: "Good Morning, Rajan 👋", med_title: "💊 My Medicines", activity_title: "🏃 Activity Monitor", emergency_title: "🚨 Emergency", settings_title: "⚙️ Settings", taken_btn: "Mark as Taken ✓", sos_btn: "SOS" },
+  kn: { greeting: "ಶುಭೋದಯ, ರಾಜನ್ 👋", med_title: "💊 ನನ್ನ ಔಷಧಗಳು", activity_title: "🏃 ಚಟುವಟಿಕೆ ಮಾನಿಟರ್", emergency_title: "🚨 ತುರ್ತು", settings_title: "⚙️ ಸೆಟ್ಟಿಂಗ್ಸ್", taken_btn: "ತೆಗೆದುಕೊಳ್ಳಲಾಗಿದೆ ✓", sos_btn: "SOS" },
+  hi: { greeting: "सुप्रभात, राजन 👋", med_title: "💊 मेरी दवाएं", activity_title: "🏃 गतिविधि मॉनिटर", emergency_title: "🚨 आपातकाल", settings_title: "⚙️ सेटिंग्स", taken_btn: "ली गई ✓", sos_btn: "SOS" },
+  ta: { greeting: "காலை வணக்கம், ராஜன் 👋", med_title: "💊 என் மருந்துகள்", activity_title: "🏃 செயல்பாடு", emergency_title: "🚨 அவசரநிலை", settings_title: "⚙️ அமைப்புகள்", taken_btn: "எடுத்தது ✓", sos_btn: "SOS" },
+  te: { greeting: "శుభోదయం, రాజన్ 👋", med_title: "💊 నా మందులు", activity_title: "🏃 కార్యాచరణ", emergency_title: "🚨 అత్యవసరం", settings_title: "⚙️ సెట్టింగులు", taken_btn: "తీసుకున్నారు ✓", sos_btn: "SOS" },
+  ml: { greeting: "സുപ്രഭാതം, രാജൻ 👋", med_title: "💊 എന്റെ മരുന്നുകൾ", activity_title: "🏃 പ്രവർത്തന നിരീക്ഷണം", emergency_title: "🚨 അടിയന്തരം", settings_title: "⚙️ ക്രമീകരണങ്ങൾ", taken_btn: "കഴിച്ചു ✓", sos_btn: "SOS" }
+};
+
+let currentLang = 'en';
+let medTaken = [false, false, false];
+
+// SPLASH
+window.onload = function() {
+  document.getElementById('splash').classList.add('active');
+  setDate();
+  setTimeout(() => showScreen('language'), 2000);
+};
+
+function setDate() {
+  const d = new Date();
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('home-date').textContent = days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); s.style.display = 'none'; });
+  const target = document.getElementById(id);
+  target.style.display = 'block';
+  target.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function changeLanguage(lang) {
+  currentLang = lang;
+  const t = translations[lang];
+  document.getElementById('home-greeting').textContent = t.greeting;
+  document.querySelectorAll('.taken-btn').forEach(b => { if (!b.classList.contains('done')) b.textContent = t.taken_btn; });
+  showScreen('home');
+}
+
+function markMedicine(id) {
+  medTaken[id - 1] = true;
+  const btn = document.getElementById('med-btn-' + id);
+  btn.textContent = 'Taken ✓';
+  btn.classList.add('done');
+  btn.disabled = true;
+  const count = medTaken.filter(Boolean).length;
+  document.getElementById('med-progress-text').textContent = count + ' of 3 medicines taken today';
+  document.getElementById('med-progress-fill').style.width = (count / 3 * 100) + '%';
+  if (count === 3) document.getElementById('med-success').style.display = 'block';
+}
+
+function triggerSOS() {
+  const btn = document.getElementById('sos-btn');
+  btn.classList.add('disabled');
+  btn.disabled = true;
+  document.getElementById('sos-result').style.display = 'block';
+}
+
+function resetSOS() {
+  const btn = document.getElementById('sos-btn');
+  btn.classList.remove('disabled');
+  btn.disabled = false;
+  document.getElementById('sos-result').style.display = 'none';
+}
+
+function toggleNotif(el) {
+  if (el.classList.contains('locked')) return;
+  el.classList.toggle('on');
+}
+
+function selectSound(el) {
+  document.querySelectorAll('.sound-opt').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function changeFontSize(size, el) {
+  const sizes = { small: '13px', medium: '16px', large: '20px' };
+  document.body.style.fontSize = sizes[size];
+  document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function setTheme(theme, el) {
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  if (theme === 'dark') document.body.classList.add('dark');
+  else document.body.classList.remove('dark');
+}
+</script>
+</body>
+</html>
