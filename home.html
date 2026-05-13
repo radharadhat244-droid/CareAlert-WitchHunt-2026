@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareAlert - Home</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="header">
+  <span style="color:white;font-size:22px;font-weight:bold">🌿 CareAlert</span>
+  <a href="settings.html">🔔</a>
+</div>
+<div class="content">
+  <div class="greeting">
+    <h2>Good Morning, Rajan 👋</h2>
+    <p id="today-date"></p>
+  </div>
+
+  <a href="medicine.html" style="text-decoration:none">
+    <div class="card">
+      <h3>💊 Medicine</h3>
+      <p>Next: Metformin at 8:00 AM</p>
+      <span class="badge yellow">Pending</span>
+    </div>
+  </a>
+
+  <a href="emergency.html" style="text-decoration:none">
+    <div class="card">
+      <h3>🏃 Activity</h3>
+      <p>Steps today: 240</p>
+      <span class="badge yellow">Low</span>
+    </div>
+  </a>
+
+  <div class="card">
+    <h3>🚨 Emergency</h3>
+    <p>All contacts active</p>
+    <span class="badge green">Ready</span>
+  </div>
+
+  <div style="display:flex;gap:12px;margin-top:8px">
+    <a href="emergency.html" class="btn btn-red" style="flex:1">🆘 SOS</a>
+    <button class="btn btn-green" style="flex:1" onclick="alert('Calling Priya...')">📞 Call Family</button>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <a href="home.html" class="active"><span>🏠</span>Home</a>
+  <a href="medicine.html"><span>💊</span>Medicine</a>
+  <a href="emergency.html"><span>🚨</span>Emergency</a>
+  <a href="settings.html"><span>⚙️</span>Settings</a>
+</div>
+
+<script>
+const d = new Date();
+const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+document.getElementById('today-date').textContent = days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+</script>
+</body>
+  </html>
