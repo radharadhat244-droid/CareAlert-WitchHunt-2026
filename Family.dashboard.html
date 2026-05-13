@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareAlert - Family Dashboard</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .tab-row { display: flex; background: white; border-bottom: 2px solid #eee; }
+  .tab { flex: 1; padding: 12px 4px; text-align: center; font-size: 13px; font-weight: bold; color: #888; cursor: pointer; border-bottom: 3px solid transparent; }
+  .tab.active { color: #2D5016; border-bottom: 3px solid #2D5016; }
+  .tab-content { display: none; padding: 16px; padding-bottom: 90px; }
+  .tab-content.active { display: block; }
+
+  /* AI REPORT */
+  .report-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+  .report-card h3 { color: #2D5016; font-size: 16px; font-weight: bold; margin-bottom: 10px; }
+  .report-text { font-size: 14px; color: #444; line-height: 1.6; white-space: pre-wrap; }
+  .generate-btn { width: 100%; padding: 14px; background: #2D5016; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 14px; }
+  .generate-btn:disabled { background: #aaa; }
+  .stat-row { display: flex; gap: 10px; margin-bottom: 14px; }
+  .stat-mini { flex: 1; background: white; border-radius: 12px; padding: 12px 8px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+  .stat-mini .val { font-size: 20px; font-weight: bold; color: #2D5016; }
+  .stat-mini .lbl { font-size: 11px; color: #888; margin-top: 2px; }
+
+  /* SYMPTOM CHECKER */
+  .symptom-input { width: 100%; padding: 14px; border: 2px solid #2D5016; border-radius: 12px; font-size: 15px; font-family: Arial; resize: none; outline: none; background: white; }
+  .symptom-result { background: white; border-radius: 16px; padding: 16px; margin-top: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: none; }
+  .urgency { display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; margin-bottom: 10px; }
+  .urgency.high { background: #ffebee; color: #D32F2F; }
+  .urgency.medium { background: #fff9c4; color: #f57f17; }
+  .urgency.low { background: #e8f5e9; color: #2D5016; }
+  .quick-symptoms { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .sym-btn { background: white; border: 1.5px solid #2D5016; color: #2D5016; border-radius: 20px; padding: 7px 14px; font-size: 13px; cursor: pointer; }
+
+  /* MEDICINE ALERT */
+  .alert-card { border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+  .alert-card.danger { background: #ffebee; border-left: 5px solid #D32F2F; }
+  .alert-card.warning { background: #fff9c4; border-left: 5px solid #f9a825; }
+  .alert-card.good { background: #e8f5e9; border-left: 5px solid #8BC34A; }
+  .alert-card h4 { font-size: 15px; font-weight: bold; margin-bottom: 6px; }
+  .alert-card p { font-size: 13px; color: #555; line-height: 1.5; }
+  .ai-advice { background: white; border-radius: 12px; padding: 12px; margin-top: 10px; font-size: 13px; color: #333; line-height: 1.5; display: none; }
+  .advice-btn { width: 100%; padding: 10px; background: white; border: 2px solid #2D5016; color: #2D5016; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 8px; }
+  .advice-btn:disabled { border-color: #aaa; color: #aaa; }
+
+  .loading { color: #888; font-style: italic; font-size: 14px; text-align: center; padding: 10px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="home.html" style="font-size:22px">←</a>
+  <h2>👨‍👩‍👧 Family Dashboard</h2>
+  <span></span>
+</div>
+
+<!-- TABS -->
+<div class="tab-row">
+  <div class="tab active" onclick="switchTab('report')">📊 Daily Report</div>
+  <div class="tab" onclick="switchTab('symptom')">🩺 Symptom Check</div>
+  <div class="tab" onclick="switchTab('medicine')">💊 Medicine Alert</div>
+</div>
+
+<!-- TAB 1: AI DAILY REPORT -->
+<div class="tab-content active" id="tab-report">
+  <div style="background:#e8f5e9;border-radius:14px;padding:12px;margin-bottom:14px;font-size:13px;color:#2D5016">
+    👋 Hi Priya! Here is your father Rajan's health summary powered by AI.
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-mini"><div style="font-size:20px">💊</div><div class="val">2/3</div><div class="lbl">Medicines</div></div>
+    <div class="stat-mini"><div style="font-size:20px">👟</div><div class="val">240</div><div class="lbl">Steps</div></div>
+    <div class="stat-mini"><div style="font-size:20px">⏰</div><div class="val">2hr</div><div class="lbl">Inactive</div></div>
+  </div>
+
+  <button class="generate-btn" id="report-btn" onclick="generateReport()">
+    🤖 Generate AI Health Report
+  </button>
+
+  <div class="report-card" id="report-card" style="display:none">
+    <h3>📋 Today's AI Health Summary</h3>
+    <div class="report-text" id="report-text"></div>
+  </div>
+</div>
+
+<!-- TAB 2: SYMPTOM CHECKER -->
+<div class="tab-content" id="tab-symptom">
+  <div style="background:#fff9c4;border-radius:14px;padding:12px;margin-bottom:14px;font-size:13px;color:#555">
+    ⚠️ Type what Rajan is experiencing. AI will tell you how urgent it is.
+  </div>
+
+  <div class="quick-symptoms">
+    <button class="sym-btn" onclick="fillSymptom('chest pain and difficulty breathing')">💔 Chest Pain</button>
+    <button class="sym-btn" onclick="fillSymptom('dizziness and feeling weak')">😵 Dizziness</button>
+    <button class="sym-btn" onclick="fillSymptom('high fever and body ache')">🌡️ Fever</button>
+    <button class="sym-btn" onclick="fillSymptom('fell down and cannot get up')">🚨 Fall</button>
+    <button class="sym-btn" onclick="fillSymptom('not eating food since morning')">🍽️ Not Eating</button>
+    <button class="sym-btn" onclick="fillSymptom('confused and not recognizing people')">🧠 Confused</button>
+  </div>
+
+  <textarea class="symptom-input" id="symptom-input" rows="3" placeholder="Example: Dad is complaining of chest pain and sweating since 1 hour..."></textarea>
+
+  <button class="generate-btn" id="symptom-btn" onclick="checkSymptom()" style="margin-top:10px">
+    🤖 Check with AI
+  </button>
+
+  <div class="symptom-result" id="symptom-result">
+    <div id="urgency-badge"></div>
+    <div class="report-text" id="symptom-text"></div>
+  </div>
+</div>
+
+<!-- TAB 3: MEDICINE MISS ALERT -->
+<div class="tab-content" id="tab-medicine">
+  <div style="background:#ffebee;border-radius:14px;padding:12px;margin-bottom:14px;font-size:13px;color:#D32F2F">
+    🚨 AI has detected medicine issues. Review below.
+  </div>
+
+  <div class="alert-card danger">
+    <h4>🔴 Metformin 500mg — Missed 3 days</h4>
+    <p>Rajan has not taken his diabetes medicine for 3 consecutive days. This is critical for a diabetic patient.</p>
+    <button class="advice-btn" id="advice-btn-1" onclick="getMedicineAdvice(1, 'Metformin 500mg missed for 3 days by a 72 year old diabetic patient')">🤖 Get AI Advice</button>
+    <div class="ai-advice" id="advice-1"></div>
+  </div>
+
+  <div class="alert-card warning">
+    <h4>🟡 Amlodipine 5mg — Missed today</h4>
+    <p>Blood pressure medicine not taken today afternoon. Monitor closely.</p>
+    <button class="advice-btn" id="advice-btn-2" onclick="getMedicineAdvice(2, 'Amlodipine 5mg blood pressure medicine missed today by elderly patient')">🤖 Get AI Advice</button>
+    <div class="ai-advice" id="advice-2"></div>
+  </div>
+
+  <div class="alert-card good">
+    <h4>🟢 Atorvastatin 10mg — On track</h4>
+    <p>Cholesterol medicine taken regularly. No issues detected.</p>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <a href="home.html"><span>🏠</span>Home</a>
+  <a href="medicine.html"><span>💊</span>Medicine</a>
+  <a href="family-dashboard.html" class="active"><span>👨‍👩‍👧</span>Family</a>
+  <a href="emergency.html"><span>🚨</span>Emergency</a>
+  <a href="settings.html"><span>⚙️</span>Settings</a>
+</div>
+
+<script>
+const API_KEY = 'YOUR_API_KEY_HERE';
+
+async function callAI(prompt) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': API_KEY,
+      'anthropic-version': '2023-06-01'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 400,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  const data = await res.json();
+  return data.content[0].text;
+}
+
+// TAB SWITCH
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// TAB 1 — GENERATE REPORT
+async function generateReport() {
+  const btn = document.getElementById('report-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Generating...';
+  document.getElementById('report-card').style.display = 'none';
+
+  try {
+    const text = await callAI(`You are CareAlert AI. Generate a short caring daily health report for Priya about her father Rajan Kumar (72 years old, Bangalore, diabetic, hypertension).
+
+Today's data:
+- Medicines: Took 2 out of 3 (missed Metformin morning dose)
+- Steps: 240 (very low)
+- Last active: 2 hours ago
+- Activity timeline: Woke up 6AM, breakfast 8AM, walked to garden 10AM, no activity 12PM, watching TV 2PM
+
+Write a warm, clear summary in 5-6 lines. End with one actionable suggestion for Priya. Keep it simple and caring.`);
+
+    document.getElementById('report-text').textContent = text;
+    document.getElementById('report-card').style.display = 'block';
+  } catch(e) {
+    document.getElementById('report-text').textContent = 'Could not connect to AI. Please check your internet.';
+    document.getElementById('report-card').style.display = 'block';
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🤖 Generate AI Health Report';
+}
+
+// TAB 2 — SYMPTOM CHECKER
+function fillSymptom(text) {
+  document.getElementById('symptom-input').value = text;
+}
+
+async function checkSymptom() {
+  const symptom = document.getElementById('symptom-input').value.trim();
+  if (!symptom) { alert('Please describe the symptoms first.'); return; }
+
+  const btn = document.getElementById('symptom-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Checking...';
+  document.getElementById('symptom-result').style.display = 'none';
+
+  try {
+    const text = await callAI(`You are CareAlert AI, an elderly care assistant. Priya is worried about her 72-year-old father Rajan in Bangalore (diabetic, hypertension patient).
+
+Symptom reported: "${symptom}"
+
+Respond in this exact format:
+URGENCY: [HIGH / MEDIUM / LOW]
+WHAT IT COULD BE: [1-2 sentences]
+WHAT TO DO NOW: [2-3 clear action steps]
+CALL AMBULANCE: [YES / NO]
+
+Keep it very simple and clear. Be direct.`);
+
+    const urgencyMatch = text.match(/URGENCY:\s*(HIGH|MEDIUM|LOW)/i);
+    const urgency = urgencyMatch ? urgencyMatch[1].toUpperCase() : 'MEDIUM';
+
+    const badge = document.getElementById('urgency-badge');
+    badge.innerHTML = `<span class="urgency ${urgency.toLowerCase()}">${urgency === 'HIGH' ? '🚨 HIGH URGENCY' : urgency === 'MEDIUM' ? '⚠️ MEDIUM URGENCY' : '✅ LOW URGENCY'}</span>`;
+
+    document.getElementById('symptom-text').textContent = text;
+    document.getElementById('symptom-result').style.display = 'block';
+  } catch(e) {
+    document.getElementById('symptom-text').textContent = 'Could not connect to AI. If serious, call 112 immediately.';
+    document.getElementById('symptom-result').style.display = 'block';
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🤖 Check with AI';
+}
+
+// TAB 3 — MEDICINE ADVICE
+async function getMedicineAdvice(id, context) {
+  const btn = document.getElementById('advice-btn-' + id);
+  const div = document.getElementById('advice-' + id);
+  btn.disabled = true;
+  btn.textContent = '⏳ Getting advice...';
+  div.style.display = 'block';
+  div.textContent = 'Loading AI advice...';
+
+  try {
+    const text = await callAI(`You are CareAlert AI. Give brief medical advice for this situation: ${context}. 
+
+Give:
+1. Risk level (1 line)
+2. What family should do right now (2 steps)
+3. Should they contact Dr. Meena? Yes/No and why
+
+Keep it under 6 lines. Simple English only.`);
+
+    div.textContent = text;
+  } catch(e) {
+    div.textContent = 'Could not load AI advice. Please contact Dr. Meena directly.';
+  }
+
+  btn.disabled = false;
+  btn.textContent = '✅ Advice Loaded';
+}
+</script>
+</body>
+      </html>
