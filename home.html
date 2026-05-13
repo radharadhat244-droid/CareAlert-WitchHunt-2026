@@ -9,7 +9,7 @@
 <body>
 <div class="header">
   <span style="color:white;font-size:22px;font-weight:bold">🌿 CareAlert</span>
-  <a href="settings.html">🔔</a>
+  <a href="notifications.html">🔔</a>
 </div>
 <div class="content">
   <div class="greeting">
@@ -25,7 +25,7 @@
     </div>
   </a>
 
-  <a href="emergency.html" style="text-decoration:none">
+  <a href="activity.html" style="text-decoration:none">
     <div class="card">
       <h3>🏃 Activity</h3>
       <p>Steps today: 240</p>
@@ -33,11 +33,13 @@
     </div>
   </a>
 
-  <div class="card">
-    <h3>🚨 Emergency</h3>
-    <p>All contacts active</p>
-    <span class="badge green">Ready</span>
-  </div>
+  <a href="emergency.html" style="text-decoration:none">
+    <div class="card">
+      <h3>🚨 Emergency</h3>
+      <p>All contacts active</p>
+      <span class="badge green">Ready</span>
+    </div>
+  </a>
 
   <div style="display:flex;gap:12px;margin-top:8px">
     <a href="emergency.html" class="btn btn-red" style="flex:1">🆘 SOS</a>
@@ -48,9 +50,9 @@
 <div class="bottom-nav">
   <a href="home.html" class="active"><span>🏠</span>Home</a>
   <a href="medicine.html"><span>💊</span>Medicine</a>
+  <a href="activity.html"><span>⛹🏻‍♀️</span>Activity</a>
   <a href="emergency.html"><span>🚨</span>Emergency</a>
   <a href="settings.html"><span>⚙️</span>Settings</a>
-  <a href="activity.html"><span>⛹🏻‍♀️</span>Activity</a>
 </div>
 
 <script>
@@ -60,4 +62,4 @@ const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov
 document.getElementById('today-date').textContent = days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
 </script>
 </body>
-  </html>
+</html>
