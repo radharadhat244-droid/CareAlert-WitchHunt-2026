@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareAlert - Settings</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .profile-box { background: #2D5016; padding: 24px; display: flex; flex-direction: column; align-items: center; }
+  .avatar { font-size: 54px; background: white; width: 86px; height: 86px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+  .profile-box h3 { color: white; font-size: 20px; }
+  .profile-box p { color: #8BC34A; font-size: 14px; }
+  .settings-list { background: white; border-radius: 16px; margin: 14px 0; overflow: hidden; }
+  .s-item { display: flex; align-items: center; justify-content: space-between; padding: 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-size: 16px; }
+  .s-item:last-child { border-bottom: none; }
+  .s-left { display: flex; align-items: center; gap: 12px; }
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; font-size: 15px; }
+  .toggle { width: 46px; height: 24px; background: #ccc; border-radius: 12px; position: relative; cursor: pointer; transition: 0.3s; }
+  .toggle.on { background: #8BC34A; }
+  .toggle::after { content:''; position:absolute; width:20px; height:20px; background:white; border-radius:50%; top:2px; left:2px; transition:0.3s; }
+  .toggle.on::after { left:24px; }
+  .notif-section { background: white; border-radius: 16px; padding: 16px; margin-bottom: 14px; }
+  .notif-section h3 { color: #2D5016; font-size: 15px; font-weight: bold; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <a href="home.html" style="font-size:22px">←</a>
+  <h2>⚙️ Settings</h2>
+  <span></span>
+</div>
+
+<div class="profile-box">
+  <div class="avatar">👴</div>
+  <h3>Rajan Kumar</h3>
+  <p>Age 72 · Bangalore</p>
+</div>
+
+<div class="content" style="padding-top:14px">
+
+  <div class="notif-section">
+    <h3>🔔 Notification Settings</h3>
+    <div class="toggle-row"><span>💊 Medicine Reminders</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="toggle-row"><span>🏃 Activity Alerts</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="toggle-row"><span>🚨 Emergency Alerts 🔒</span><div class="toggle on" style="cursor:not-allowed"></div></div>
+    <div class="toggle-row"><span>👨‍👩‍👧 Family Updates</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+  </div>
+
+  <div class="settings-list">
+    <div class="s-item" onclick="window.location.href='index.html'"><div class="s-left"><span>🌐</span><span>Language</span></div><span style="color:#bbb">›</span></div>
+    <div class="s-item" onclick="alert('Coming soon!')"><div class="s-left"><span>👨‍👩‍👧</span><span>Family Contacts</span></div><span style="color:#bbb">›</span></div>
+    <div class="s-item" onclick="window.location.href='medicine.html'"><div class="s-left"><span>💊</span><span>My Medicines</span></div><span style="color:#bbb">›</span></div>
+    <div class="s-item" onclick="alert('Coming soon!')"><div class="s-left"><span>🔒</span><span>Privacy & Security</span></div><span style="color:#bbb">›</span></div>
+    <div class="s-item" onclick="alert('Coming soon!')"><div class="s-left"><span>❓</span><span>Help & Support</span></div><span style="color:#bbb">›</span></div>
+  </div>
+
+  <p style="text-align:center;color:#aaa;font-size:12px;margin-top:8px">CareAlert v1.0 · WitchHunt 2026 · Team Matrix System</p>
+  <button class="btn btn-outline" style="color:#D32F2F;border-color:#D32F2F;margin-top:12px" onclick="window.location.href='index.html'">Sign Out</button>
+</div>
+
+<div class="bottom-nav">
+  <a href="home.html"><span>🏠</span>Home</a>
+  <a href="medicine.html"><span>💊</span>Medicine</a>
+  <a href="emergency.html"><span>🚨</span>Emergency</a>
+  <a href="settings.html" class="active"><span>⚙️</span>Settings</a>
+</div>
+</body>
+</html>
