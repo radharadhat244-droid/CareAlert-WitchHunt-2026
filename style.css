@@ -1,0 +1,23 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; background: #F5F5DC; max-width: 390px; margin: 0 auto; min-height: 100vh; }
+.header { background: #2D5016; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
+.header h2 { color: white; font-size: 20px; }
+.header a { color: white; font-size: 22px; text-decoration: none; }
+.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 390px; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 2px solid #ddd; }
+.bottom-nav a { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: #888; text-decoration: none; gap: 3px; }
+.bottom-nav a span:first-child { font-size: 22px; }
+.bottom-nav a.active { color: #2D5016; font-weight: bold; }
+.content { padding: 16px; padding-bottom: 90px; }
+.card { background: white; border-radius: 14px; padding: 16px; margin-bottom: 12px; border-left: 5px solid #2D5016; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+.card h3 { color: #2D5016; font-size: 17px; }
+.card p { color: #555; font-size: 14px; margin-top: 4px; }
+.badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-top: 8px; }
+.badge.green { background: #e8f5e9; color: #2D5016; }
+.badge.yellow { background: #fff9c4; color: #f57f17; }
+.btn { display: block; width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 10px; text-align: center; text-decoration: none; }
+.btn-green { background: #2D5016; color: white; }
+.btn-red { background: #D32F2F; color: white; }
+.btn-outline { background: white; color: #2D5016; border: 2px solid #2D5016; }
+.greeting { margin-bottom: 16px; }
+.greeting h2 { font-size: 24px; color: #2D5016; font-weight: bold; }
+.greeting p { color: #888; font-size: 14px; }
