@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareAlert - Medicine</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .med-time { font-size: 13px; font-weight: bold; color: #888; margin: 14px 0 6px; text-transform: uppercase; }
+  .med-card { background: white; border-radius: 14px; padding: 16px; margin-bottom: 10px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+  .med-name { font-size: 17px; font-weight: bold; color: #2D5016; }
+  .med-note { font-size: 13px; color: #888; margin: 4px 0 10px; }
+  .taken-btn { width: 100%; padding: 12px; border: 2px solid #2D5016; border-radius: 10px; background: white; color: #2D5016; font-size: 15px; font-weight: bold; cursor: pointer; }
+  .taken-btn.done { background: #2D5016; color: white; }
+  .progress-box { background: white; border-radius: 14px; padding: 14px; margin-bottom: 14px; }
+  .progress-bar { background: #e0e0e0; border-radius: 10px; height: 10px; margin-top: 8px; }
+  .progress-fill { background: #8BC34A; height: 10px; border-radius: 10px; transition: width 0.4s; }
+  .success { display: none; background: #e8f5e9; border-radius: 14px; padding: 16px; text-align: center; color: #2D5016; font-weight: bold; font-size: 16px; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <a href="home.html" style="font-size:22px">←</a>
+  <h2>💊 My Medicines</h2>
+  <span></span>
+</div>
+<div class="content">
+  <div class="progress-box">
+    <p id="prog-text">0 of 3 medicines taken today</p>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <div class="success" id="success-msg">🎉 All medicines taken today!</div>
+
+  <div class="med-time">🌅 Morning — 8:00 AM</div>
+  <div class="med-card">
+    <div class="med-name">Metformin 500mg</div>
+    <div class="med-note">Take with food</div>
+    <button class="taken-btn" id="btn1" onclick="take(1)">Mark as Taken ✓</button>
+  </div>
+
+  <div class="med-time">☀️ Afternoon — 1:00 PM</div>
+  <div class="med-card">
+    <div class="med-name">Amlodipine 5mg</div>
+    <div class="med-note">Take after lunch</div>
+    <button class="taken-btn" id="btn2" onclick="take(2)">Mark as Taken ✓</button>
+  </div>
+
+  <div class="med-time">🌙 Night — 9:00 PM</div>
+  <div class="med-card">
+    <div class="med-name">Atorvastatin 10mg</div>
+    <div class="med-note">Take before sleep</div>
+    <button class="taken-btn" id="btn3" onclick="take(3)">Mark as Taken ✓</button>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <a href="home.html"><span>🏠</span>Home</a>
+  <a href="medicine.html" class="active"><span>💊</span>Medicine</a>
+  <a href="emergency.html"><span>🚨</span>Emergency</a>
+  <a href="settings.html"><span>⚙️</span>Settings</a>
+</div>
+
+<script>
+let taken = [false, false, false];
+function take(id) {
+  taken[id-1] = true;
+  const btn = document.getElementById('btn'+id);
+  btn.textContent = 'Taken ✓';
+  btn.classList.add('done');
+  btn.disabled = true;
+  const count = taken.filter(Boolean).length;
+  document.getElementById('prog-text').textContent = count + ' of 3 medicines taken today';
+  document.getElementById('prog-fill').style.width = (count/3*100) + '%';
+  if(count === 3) document.getElementById('success-msg').style.display = 'block';
+}
+</script>
+</body>
+</html>
